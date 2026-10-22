@@ -94,6 +94,10 @@
   footer{padding:44px 0 60px;color:#6f7a90;font-size:13.5px;border-top:1px solid var(--line)}
   footer a{color:#8f9bb3}
 
+  figure{margin:0}
+  figure img{display:block;width:100%;border:1px solid var(--line);border-radius:14px}
+  figcaption{margin-top:8px;color:var(--muted);font-size:13px}
+
   @media (max-width:900px){
     .grid-3,.grid-2,.compare{grid-template-columns:1fr}
     .flow{grid-template-columns:repeat(2,1fr)}
@@ -108,6 +112,7 @@
     <div class="brand"><span class="dot"></span> Show Me The Story</div>
     <nav>
       <a href="#features">功能</a>
+      <a href="#benchmark">扫榜拆解</a>
       <a href="#workflow">流程</a>
       <a href="#skills">技能</a>
       <a href="#start">开始使用</a>
@@ -133,6 +138,39 @@
   </div>
 </div>
 
+<section id="benchmark">
+  <div class="wrap">
+    <h2>先扫七猫 / 晋江榜，再拆真正文</h2>
+    <p class="sub">
+      这是它和“空白提示词生成器”最大的区别：先拿真实榜单校准市场，再用对标的真正文校准开篇钩子与整书节奏，
+      最后才排你的大纲。
+    </p>
+    <div class="flow">
+      <div class="step"><div class="n">01</div><b>选榜单</b><span>七猫 / 晋江 · 女生 / 男生 · 新书 / 热销 / 收藏 / 完结 / 更新 · 日榜 / 月榜</span></div>
+      <div class="step"><div class="n">02</div><b>拉榜单</b><span>一键拉取公开榜单，生成候选池</span></div>
+      <div class="step"><div class="n">03</div><b>AI 选对标</b><span>不用自己挑：按你的短故事选最接近的爆款</span></div>
+      <div class="step"><div class="n">04</div><b>拿真正文</b><span>抓免费章 / 自己粘贴 / 从本机载入</span></div>
+      <div class="step"><div class="n">05</div><b>拆完排大纲</b><span>开篇钩子、情绪供给、章节配比 → 本批大纲</span></div>
+    </div>
+    <div class="grid-2" style="margin-top:24px">
+      <figure>
+        <img src="images/12-scan-rank.png" alt="扫榜面板：七猫 / 晋江 → 频道 → 榜单类型 → 日/月榜" />
+        <figcaption>扫榜：榜单源 → 频道 → 榜单类型 → 日/月榜 → 拉取</figcaption>
+      </figure>
+      <figure>
+        <img src="images/13-benchmark-text.png" alt="对标正文：抓免费章、自己粘贴、从本机载入" />
+        <figcaption>对标正文：抓免费章 / 自己粘贴 / 从本机载入</figcaption>
+      </figure>
+    </div>
+    <p class="sub" style="margin-top:18px">
+      填好正文后点「用这段正文拆解」，按真正文拆开篇钩子与节奏，比只看榜单准得多。
+    </p>
+    <div class="warn">
+      入 V 章节页面上没有正文，需要你自己从有权限的渠道复制。工具不绕过付费墙。
+    </div>
+  </div>
+</section>
+
 <section id="features">
   <div class="wrap">
     <h2>十个模块，一条写作流水线</h2>
@@ -140,7 +178,7 @@
     <div class="grid-3">
       <div class="card"><div class="ico">◧</div><h3>工作台</h3><p>进度总览：已确认、待生成、待审阅，一键继续下一章。</p></div>
       <div class="card"><div class="ico">⚙</div><h3>配置</h3><p>题材、每章字数、写作风格、叙述视角；人物卡与世界观条目。</p></div>
-      <div class="card"><div class="ico">☰</div><h3>大纲</h3><p>每批 1–36 章，支持对标拆解、分批排纲与重排。</p></div>
+      <div class="card"><div class="ico">☰</div><h3>大纲</h3><p>每批 1–36 章；先按七猫 / 晋江对标拆解，再分批排纲与重排。</p></div>
       <div class="card"><div class="ico">✎</div><h3>写作</h3><p>生成正文 → 去 AI 味 → 审核 → 确认，未确认不进下一章。</p></div>
       <div class="card"><div class="ico">✓</div><h3>校订</h3><p>章节级、段落级、人工三种修订方式。</p></div>
       <div class="card"><div class="ico">⚑</div><h3>伏笔</h3><p>埋设与回收台账，完结前检查未回收项。</p></div>
