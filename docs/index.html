@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Show Me The Story · 带记忆的 AI 长篇小说工作台</title>
+<meta name="description" content="逐章生成、逐章审核，把人设、世界观、已写正文、关键事实与未回收伏笔一起带进每一次续写。" />
+<style>
+  :root{
+    --bg:#0d0f14; --panel:#151922; --panel-2:#1b2130; --line:#252c3b;
+    --text:#e8ecf5; --muted:#98a2b8; --accent:#8b7bff; --accent-2:#ffb86b;
+    --ok:#54d6a0;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font:16px/1.75 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  header{
+    position:sticky;top:0;z-index:10;backdrop-filter:blur(12px);
+    background:rgba(13,15,20,.82);border-bottom:1px solid var(--line);
+  }
+  header .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px}
+  .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 18px var(--accent)}
+  nav a{color:var(--muted);margin-left:22px;font-size:14px}
+  nav a:hover{color:var(--text);text-decoration:none}
+
+  .hero{padding:84px 0 56px;position:relative;overflow:hidden}
+  .hero:before{
+    content:"";position:absolute;width:720px;height:720px;right:-220px;top:-320px;
+    background:radial-gradient(circle,rgba(139,123,255,.22),transparent 62%);pointer-events:none;
+  }
+  .hero .tag{display:inline-block;font-size:13px;color:var(--accent-2);border:1px solid rgba(255,184,107,.35);
+    background:rgba(255,184,107,.08);padding:4px 10px;border-radius:999px;margin-bottom:18px}
+  h1{font-size:clamp(34px,5vw,56px);line-height:1.15;margin:0 0 16px;letter-spacing:-.02em}
+  h1 em{font-style:normal;background:linear-gradient(120deg,var(--accent),#57d2ff 60%,var(--accent-2));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{font-size:clamp(16px,2vw,19px);color:var(--muted);max-width:760px;margin:0 0 30px}
+  .cta{display:flex;gap:12px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:10px;
+    border:1px solid var(--line);background:var(--panel);color:var(--text);font-size:15px}
+  .btn:hover{text-decoration:none;border-color:#3a4460;background:var(--panel-2)}
+  .btn.primary{background:linear-gradient(135deg,#7c5cff,#5e8bff);border-color:transparent;font-weight:600}
+  .btn.primary:hover{filter:brightness(1.08)}
+
+  section{padding:64px 0;border-top:1px solid var(--line)}
+  h2{font-size:clamp(24px,3vw,32px);margin:0 0 10px;letter-spacing:-.01em}
+  .sub{color:var(--muted);margin:0 0 32px;max-width:760px}
+
+  .shot{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel);
+    box-shadow:0 24px 60px rgba(0,0,0,.45)}
+  .shot img{display:block;width:100%;height:auto}
+  .hero-shot{margin-top:44px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+  .card h3{margin:0 0 6px;font-size:16px}
+  .card p{margin:0;color:var(--muted);font-size:14.5px}
+  .ico{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;margin-bottom:12px;
+    background:rgba(139,123,255,.14);border:1px solid rgba(139,123,255,.28);font-size:16px}
+
+  .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:8px}
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .step .n{color:var(--accent);font-size:12px;letter-spacing:.14em}
+  .step b{display:block;margin:6px 0 4px;font-size:15px}
+  .step span{color:var(--muted);font-size:13.5px}
+
+  .chips{display:flex;flex-wrap:wrap;gap:9px}
+  .chip{font-size:13px;color:#c9d1e3;background:var(--panel);border:1px solid var(--line);
+    padding:7px 12px;border-radius:999px}
+
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .bad,.good{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px}
+  .bad h3{color:#ff8f8f}.good h3{color:var(--ok)}
+  .bad ul,.good ul{margin:10px 0 0;padding-left:18px;color:var(--muted);font-size:14.5px}
+  .bad li,.good li{margin:6px 0}
+
+  pre{background:#0a0c11;border:1px solid var(--line);border-radius:12px;padding:18px;
+    overflow:auto;font-size:13.5px;line-height:1.7}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .steps li{margin:10px 0;color:var(--muted)}
+  .steps b{color:var(--text)}
+
+  .warn{background:rgba(255,184,107,.08);border:1px solid rgba(255,184,107,.3);
+    border-radius:12px;padding:16px 18px;color:#ffd8a8;font-size:14.5px}
+
+  footer{padding:44px 0 60px;color:#6f7a90;font-size:13.5px;border-top:1px solid var(--line)}
+  footer a{color:#8f9bb3}
+
+  @media (max-width:900px){
+    .grid-3,.grid-2,.compare{grid-template-columns:1fr}
+    .flow{grid-template-columns:repeat(2,1fr)}
+    nav{display:none}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span> Show Me The Story</div>
+    <nav>
+      <a href="#features">功能</a>
+      <a href="#workflow">流程</a>
+      <a href="#skills">技能</a>
+      <a href="#start">开始使用</a>
+      <a href="https://github.com/leijingqiu3-ops/show-me-the-story-demo/blob/main/docs/%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md">使用手册</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="tag">AI 长篇小说 · 本地运行 · 作品已通过番茄签约审核</span>
+    <h1>写到第一百章，<br/><em>人设和伏笔还在。</em></h1>
+    <p class="lead">
+      逐章生成、逐章审核。每次续写自动带上：本章大纲、人物设定、世界观、已确认正文、
+      已提取事实与未回收伏笔。它解决的不是“会不会写”，而是长篇必崩的一致性。
+    </p>
+    <div class="cta">
+      <a class="btn primary" href="#start">开始使用</a>
+      <a class="btn" href="https://github.com/leijingqiu3-ops/show-me-the-story-demo/blob/main/docs/%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md">阅读使用手册</a>
+      <a class="btn" href="https://github.com/leijingqiu3-ops/show-me-the-story-demo">GitHub</a>
+    </div>
+    <div class="shot hero-shot"><img src="images/02-workbench.png" alt="工作台界面" /></div>
+  </div>
+</div>
+
+<section id="features">
+  <div class="wrap">
+    <h2>十个模块，一条写作流水线</h2>
+    <p class="sub">不是“输入一句话生成一章”，而是把长篇创作拆成可审阅、可回退、可校验的工序。</p>
+    <div class="grid-3">
+      <div class="card"><div class="ico">◧</div><h3>工作台</h3><p>进度总览：已确认、待生成、待审阅，一键继续下一章。</p></div>
+      <div class="card"><div class="ico">⚙</div><h3>配置</h3><p>题材、每章字数、写作风格、叙述视角；人物卡与世界观条目。</p></div>
+      <div class="card"><div class="ico">☰</div><h3>大纲</h3><p>每批 1–36 章，支持对标拆解、分批排纲与重排。</p></div>
+      <div class="card"><div class="ico">✎</div><h3>写作</h3><p>生成正文 → 去 AI 味 → 审核 → 确认，未确认不进下一章。</p></div>
+      <div class="card"><div class="ico">✓</div><h3>校订</h3><p>章节级、段落级、人工三种修订方式。</p></div>
+      <div class="card"><div class="ico">⚑</div><h3>伏笔</h3><p>埋设与回收台账，完结前检查未回收项。</p></div>
+      <div class="card"><div class="ico">❝</div><h3>金句库</h3><p>按题材建档，化用句式但不整句照搬。</p></div>
+      <div class="card"><div class="ico">◍</div><h3>记忆</h3><p>人物、世界观、组织、关系与关键事实，按相关性召回。</p></div>
+      <div class="card"><div class="ico">⌘</div><h3>图谱</h3><p>实体关系图，群像戏不写串称谓与立场。</p></div>
+      <div class="card"><div class="ico">✦</div><h3>技能</h3><p>19 个可切换写作技能：扫榜、拆文、去 AI 味、章节体检。</p></div>
+      <div class="card"><div class="ico">⇩</div><h3>导出</h3><p>整本 TXT；ZIP 备份含正文、设定、会话与校订状态。</p></div>
+      <div class="card"><div class="ico">⌂</div><h3>本地优先</h3><p>数据全在本机目录，换电脑整目录拷走即可。</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>长篇真正会崩的地方</h2>
+    <p class="sub">单章质量靠提示词，长篇质量靠状态管理。</p>
+    <div class="compare">
+      <div class="bad">
+        <h3>只用聊天窗口续写</h3>
+        <ul>
+          <li>上下文塞满后开始遗忘早期设定</li>
+          <li>人物称谓、立场、已知信息前后矛盾</li>
+          <li>伏笔埋了没人记，最后收不回来</li>
+          <li>同一个桥段反复用，读者先察觉</li>
+          <li>改一章，后面几十章的引用全错</li>
+        </ul>
+      </div>
+      <div class="good">
+        <h3>这个工作台的做法</h3>
+        <ul>
+          <li>每章生成摘要，历史按需压缩而不是硬塞</li>
+          <li>关键事实抽取 + 设定库比对，冲突先拦下</li>
+          <li>伏笔台账区分“规划 / 已埋 / 已回收”</li>
+          <li>修改前提示受影响的后续段落</li>
+          <li>章节状态机：未确认不进入上下文</li>
+        </ul>
+      </div>
+    </div>
+    <div class="grid-2" style="margin-top:22px">
+      <div class="shot"><img src="images/09-memory.png" alt="记忆与事实" /></div>
+      <div class="shot"><img src="images/04-outline.png" alt="大纲" /></div>
+    </div>
+  </div>
+</section>
+
+<section id="workflow">
+  <div class="wrap">
+    <h2>写作流程</h2>
+    <p class="sub">跟着工作台的提示走，就不会乱。</p>
+    <div class="flow">
+      <div class="step"><div class="n">STEP 01</div><b>配置</b><span>设定、人物、世界观</span></div>
+      <div class="step"><div class="n">STEP 02</div><b>大纲</b><span>每批 3–6 章，审阅后确认</span></div>
+      <div class="step"><div class="n">STEP 03</div><b>写作</b><span>生成 → 去 AI 味 → 审核</span></div>
+      <div class="step"><div class="n">STEP 04</div><b>确认</b><span>确认后才进入上下文</span></div>
+      <div class="step"><div class="n">STEP 05</div><b>校订</b><span>跨章一致性、伏笔回收</span></div>
+    </div>
+    <div class="grid-2" style="margin-top:24px">
+      <div class="shot"><img src="images/05-writing.png" alt="写作页" /></div>
+      <div class="shot"><img src="images/03-config.png" alt="配置页" /></div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <h2>7 个已安装技能</h2>
+    <p class="sub">技能不是提示词收藏夹，而是挂在流程上的规则：用 skill.json 声明生效阶段，用 SKILL.md 写判定标准。</p>
+    <div class="chips">
+      <span class="chip">AI 率自检门禁 ≥13% 重写</span>
+      <span class="chip">章节体检（人设/剧情/伏笔）</span>
+      <span class="chip">金句库自动建档</span>
+      <span class="chip">金句化用规矩（禁整句照搬）</span>
+      <span class="chip">模仿指定文风</span>
+      <span class="chip">网文去 AI 味 · 七闸门</span>
+      <span class="chip">中文正文节奏与对话</span>
+    </div>
+    <div class="shot" style="margin-top:26px"><img src="images/11-skills.png" alt="技能页" /></div>
+  </div>
+</section>
+
+<section id="start">
+  <div class="wrap">
+    <h2>三步跑起来</h2>
+    <p class="sub">Windows 本地运行，浏览器访问。程序目录同时是数据目录。</p>
+    <ol class="steps">
+      <li><b>放程序</b>：下载 Release 里的 <code>show-me-the-story.exe</code>，放进一个空目录。</li>
+      <li><b>填 Key</b>：把仓库里的 <code>config.example.json</code> 复制为 <code>api.json</code>，把占位符换成你自己的 Key。</li>
+      <li><b>启动</b>：双击 exe，浏览器打开 <code>http://localhost:48090</code>。</li>
+    </ol>
+<pre><code>{
+  "api_key": "请在这里填入你的 API Key",
+  "base_url": "https://api.deepseek.com",
+  "model": "deepseek-chat",
+  "fallback_model": "deepseek-chat",
+  "max_tokens": 32768,
+  "http_timeout_seconds": 600,
+  "context_budget_tokens": 300000
+}</code></pre>
+    <p class="sub" style="margin-top:18px">
+      换用其他 OpenAI 兼容服务时，同时修改 <code>base_url</code> 与 <code>model</code> 即可。
+      详细步骤与每个界面的说明见 <a href="https://github.com/leijingqiu3-ops/show-me-the-story-demo/blob/main/docs/%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md">使用手册</a>。
+    </p>
+    <div class="warn">
+      安全提示：<code>api.json</code> 保存的是明文密钥，不要提交到 Git，也不要随目录打包外发。
+      程序默认监听所有网卡且无鉴权，只想自己使用时请以管理员身份运行「仅本机访问」脚本，或关闭服务。
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>界面一览</h2>
+    <div class="grid-3">
+      <div class="shot"><img src="images/01-projects.png" alt="项目列表" /></div>
+      <div class="shot"><img src="images/06-revision.png" alt="校订" /></div>
+      <div class="shot"><img src="images/07-foreshadow.png" alt="伏笔" /></div>
+      <div class="shot"><img src="images/08-quotes.png" alt="金句库" /></div>
+      <div class="shot"><img src="images/10-graph.png" alt="图谱" /></div>
+      <div class="shot"><img src="images/02-workbench.png" alt="工作台" /></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Show Me The Story · 本地优先的 AI 长篇小说工作台 ·
+    <a href="https://github.com/leijingqiu3-ops/show-me-the-story-demo">GitHub</a> ·
+    <a href="https://github.com/leijingqiu3-ops/show-me-the-story-demo/blob/main/docs/%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md">使用手册</a><br/>
+    本页不包含任何密钥。示例配置仅提供占位符。
+  </div>
+</footer>
+
+</body>
+</html>

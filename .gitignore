@@ -1,0 +1,20 @@
+# 本地密钥（复制 config.example.json 后生成，绝不提交）
+api.json
+work-api-backup.json
+*.key
+.env
+
+# 运行时数据
+storys/
+backup/
+browser-profile/
+_tools/
+skills/
+dev.log
+*.log
+
+# 备份与构建产物
+*.bak
+*.bak-*
+*.zip
+*.exe

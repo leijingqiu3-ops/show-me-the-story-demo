@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Show Me The Story · 界面演示</title>
+<style>
+  :root{--bg:#0b0d12;--side:#10131a;--panel:#151922;--line:#232a38;--text:#e6ebf5;--muted:#8d97ad;--accent:#8b7bff;--ok:#54d6a0}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+  a{color:var(--accent);text-decoration:none}
+  .shell{display:flex;min-height:100vh}
+  aside{width:252px;flex:0 0 252px;background:var(--side);border-right:1px solid var(--line);padding:18px 0;position:sticky;top:0;height:100vh;overflow:auto}
+  .brand{font-weight:700;padding:0 20px 14px;font-size:15px}
+  .brand small{display:block;color:var(--muted);font-weight:400;font-size:12px;margin-top:2px}
+  .proj{margin:0 14px 14px;padding:10px 12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;font-size:13px}
+  .proj b{display:block;font-size:14px}
+  .proj span{color:var(--muted);font-size:12px}
+  .grp{padding:10px 20px 4px;color:#5f6a80;font-size:11px;letter-spacing:.16em}
+  nav button{display:flex;gap:10px;align-items:center;width:100%;background:none;border:0;color:#b9c2d4;
+    padding:9px 20px;font:inherit;cursor:pointer;text-align:left}
+  nav button:hover{background:#161b26;color:#fff}
+  nav button.on{background:#1c2233;color:#fff;box-shadow:inset 3px 0 0 var(--accent)}
+  nav .n{width:18px;color:#5f6a80;font-size:12px}
+  main{flex:1;min-width:0}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 26px;
+    border-bottom:1px solid var(--line);background:rgba(11,13,18,.9);position:sticky;top:0;z-index:5}
+  .top .t{font-size:13px;color:var(--muted)}
+  .tag{font-size:12px;color:#c9b8ff;background:rgba(139,123,255,.12);border:1px solid rgba(139,123,255,.3);
+    padding:3px 9px;border-radius:999px}
+  .body{padding:26px 30px 60px;max-width:1240px}
+  h1{font-size:22px;margin:0 0 6px}
+  .sub{color:var(--muted);margin:0 0 18px;max-width:860px}
+  .note{background:rgba(255,184,107,.08);border:1px solid rgba(255,184,107,.28);color:#ffd8a8;
+    border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:20px}
+  .shot{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel);box-shadow:0 18px 50px rgba(0,0,0,.45)}
+  .shot img{display:block;width:100%;height:auto;cursor:zoom-in}
+  .meta{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 16px}
+  .pill{font-size:12px;color:#a9b4c9;background:var(--panel);border:1px solid var(--line);padding:4px 10px;border-radius:999px}
+  section{display:none}
+  section.on{display:block}
+  footer{padding:26px 30px;color:#5f6a80;font-size:12px}
+  .zoom{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:50;cursor:zoom-out;padding:20px}
+  .zoom.on{display:flex}
+  .zoom img{max-width:100%;max-height:100%;border-radius:8px}
+  @media (max-width:860px){
+    aside{display:none}
+    .body{padding:18px}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside>
+    <div class="brand">AI 小说写手<small>Show Me The Story · 界面演示</small></div>
+    <div class="proj"><b>雾港档案</b><span>写作阶段 · 0/9 章 · ZH</span></div>
+    <div class="grp">开始</div>
+    <nav>
+      <button data-k="workbench" class="on"><span class="n">1</span>工作台</button>
+    </nav>
+    <div class="grp">规划</div>
+    <nav>
+      <button data-k="config"><span class="n">2</span>配置</button>
+      <button data-k="outline"><span class="n">3</span>大纲</button>
+    </nav>
+    <div class="grp">写作</div>
+    <nav>
+      <button data-k="writing"><span class="n">4</span>写作</button>
+      <button data-k="revision"><span class="n">5</span>校订</button>
+    </nav>
+    <div class="grp">素材</div>
+    <nav>
+      <button data-k="foreshadow">伏笔</button>
+      <button data-k="quotes">金句库</button>
+      <button data-k="memory">记忆</button>
+      <button data-k="graph">图谱</button>
+    </nav>
+    <div class="grp">工具</div>
+    <nav>
+      <button data-k="skills">技能</button>
+      <button data-k="projects">项目列表</button>
+    </nav>
+  </aside>
+
+  <main>
+    <div class="top">
+      <div class="t">AI 小说写手 · <b style="color:#e6ebf5">雾港档案</b> · 写作阶段 · 0/9 章</div>
+      <span class="tag">静态演示</span>
+    </div>
+
+    <div class="body">
+      <div class="note">这是用示例项目截图做的静态演示：可以点左侧菜单切换模块，但输入框和按钮不可交互。实际写作请下载 Release 在本地运行。</div>
+
+      <section id="workbench" class="on">
+        <h1>工作台</h1>
+        <p class="sub">进度总览与三段流程入口。顶部提示会随进度变化，跟着它走就不会乱。</p>
+        <div class="meta"><span class="pill">已确认 0 / 9 章</span><span class="pill">9 章待生成</span><span class="pill">配置 → 大纲 → 写作</span></div>
+        <div class="shot"><img src="images/02-workbench.png" alt="工作台" /></div>
+      </section>
+
+      <section id="config">
+        <h1>配置</h1>
+        <p class="sub">故事设定、人物卡、世界观条目与模型连接。写作风格要写成可执行规则，不要写「文笔好一点」。</p>
+        <div class="meta"><span class="pill">故事类型</span><span class="pill">每章字数 500–20000</span><span class="pill">人物：外貌 / 动机 / 能力边界 / 说话方式</span><span class="pill">一键立项</span></div>
+        <div class="shot"><img src="images/03-config.png" alt="配置" /></div>
+      </section>
+
+      <section id="outline">
+        <h1>大纲</h1>
+        <p class="sub">每批 1–36 章。第一次建议 3–6 章：拉榜单 → 选对标 → 抓免费章 → 拆解 → 按拆解排本批大纲。</p>
+        <div class="meta"><span class="pill">七猫 / 晋江</span><span class="pill">新书 / 热销 / 收藏 / 完结 / 更新</span><span class="pill">日榜 / 月榜</span><span class="pill">抓 3/6/10/20 章</span><span class="pill">分批拆榜 → 分批排纲</span></div>
+        <div class="shot"><img src="images/04-outline.png" alt="大纲" /></div>
+      </section>
+
+      <section id="writing">
+        <h1>写作</h1>
+        <p class="sub">生成当前章 → 去 AI 味 → 审核 → 确认。确认后的章节才进入上下文，成为后续写作的依据。</p>
+        <div class="meta"><span class="pill">正文 + 摘要 + 一致性检查</span><span class="pill">章节修订 / 段落修订 / 人工编辑</span><span class="pill">未确认不进下一章</span></div>
+        <div class="shot"><img src="images/05-writing.png" alt="写作" /></div>
+      </section>
+
+      <section id="revision">
+        <h1>校订</h1>
+        <p class="sub">跨章检查：全局事实、设定是否被正文改掉、已确认章节之间有无矛盾。</p>
+        <div class="meta"><span class="pill">冲突优先改正文</span><span class="pill">改设定会污染后续章节</span></div>
+        <div class="shot"><img src="images/06-revision.png" alt="校订" /></div>
+      </section>
+
+      <section id="foreshadow">
+        <h1>伏笔</h1>
+        <p class="sub">规划 / 已埋 / 已回收三态台账。完结前必须过一遍未回收项，这是烂尾的主要来源。</p>
+        <div class="meta"><span class="pill">埋在哪</span><span class="pill">打算在哪收</span><span class="pill">沉睡伏笔提醒</span></div>
+        <div class="shot"><img src="images/07-foreshadow.png" alt="伏笔" /></div>
+      </section>
+
+      <section id="quotes">
+        <h1>金句库</h1>
+        <p class="sub">按题材建档，写作时化用。规则是禁止整句照搬，只借句式和节奏；实物题字除外。</p>
+        <div class="meta"><span class="pill">公有领域</span><span class="pill">每条带出处</span><span class="pill">一章最多一处显性化用</span></div>
+        <div class="shot"><img src="images/08-quotes.png" alt="金句库" /></div>
+      </section>
+
+      <section id="memory">
+        <h1>记忆</h1>
+        <p class="sub">人物、组织、世界观、关系与关键事实。正文改了但设定没跟上时，这里会显示「待同步」。</p>
+        <div class="meta"><span class="pill">事实带出处</span><span class="pill">冲突先拦下</span><span class="pill">按相关性召回</span></div>
+        <div class="shot"><img src="images/09-memory.png" alt="记忆" /></div>
+      </section>
+
+      <section id="graph">
+        <h1>图谱</h1>
+        <p class="sub">实体关系图。群像戏、宅斗、多男主时，最容易写串的是称谓和立场。</p>
+        <div class="meta"><span class="pill">人物关系</span><span class="pill">势力归属</span><span class="pill">出场追踪</span></div>
+        <div class="shot"><img src="images/10-graph.png" alt="图谱" /></div>
+      </section>
+
+      <section id="skills">
+        <h1>技能</h1>
+        <p class="sub">7 个已安装技能（5 个已注册启用）。技能用 skill.json 声明生效阶段，用 SKILL.md 写判定标准。</p>
+        <div class="meta"><span class="pill">AI 率门禁 ≥13%</span><span class="pill">章节体检</span><span class="pill">金句库 / 化用</span><span class="pill">文风模仿</span><span class="pill">去 AI 味 · 七闸门</span><span class="pill">中文节奏</span></div>
+        <div class="shot"><img src="images/11-skills.png" alt="技能" /></div>
+      </section>
+
+      <section id="projects">
+        <h1>项目列表</h1>
+        <p class="sub">切换项目、新建、删除、备份 ZIP、从备份恢复为新项目。</p>
+        <div class="meta"><span class="pill">多项目</span><span class="pill">ZIP 备份 / 恢复</span><span class="pill">语言创建后不可改</span></div>
+        <div class="shot"><img src="images/01-projects.png" alt="项目列表" /></div>
+      </section>
+    </div>
+
+    <footer>Show Me The Story · 静态界面演示 · <a href="index.html">返回项目主页</a> · <a href="https://github.com/leijingqiu3-ops/show-me-the-story-demo">GitHub</a></footer>
+  </main>
+</div>
+
+<div class="zoom" id="zoom"><img alt="" /></div>
+<script>
+  const btns=[...document.querySelectorAll('nav button')];
+  const secs=[...document.querySelectorAll('section')];
+  function show(k, push){
+    secs.forEach(s=>s.classList.toggle('on', s.id===k));
+    btns.forEach(b=>b.classList.toggle('on', b.dataset.k===k));
+    if(push) history.replaceState(null,'','#'+k);
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  btns.forEach(b=>b.addEventListener('click',()=>show(b.dataset.k,true)));
+  const init=location.hash.slice(1);
+  if(init && document.getElementById(init)) show(init,false);
+  const z=document.getElementById('zoom'), zi=z.querySelector('img');
+  document.querySelectorAll('.shot img').forEach(img=>{
+    img.addEventListener('click',()=>{zi.src=img.src; zi.alt=img.alt; z.classList.add('on');});
+  });
+  z.addEventListener('click',()=>z.classList.remove('on'));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape') z.classList.remove('on')});
+</script>
+</body>
+</html>

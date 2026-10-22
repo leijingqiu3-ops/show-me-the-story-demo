@@ -1,0 +1,9 @@
+{
+  "api_key": "请在这里填入你的 API Key",
+  "base_url": "https://api.deepseek.com",
+  "model": "deepseek-chat",
+  "fallback_model": "deepseek-chat",
+  "max_tokens": 32768,
+  "http_timeout_seconds": 600,
+  "context_budget_tokens": 300000
+}
